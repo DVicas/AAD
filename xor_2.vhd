@@ -9,5 +9,6 @@ end xor_2;
 
 architecture behavioral of xor_2 is 
 begin
-	c <= a xor b;
+
+	c <= (a and not b) or (not a and b);
 end behavioral;
