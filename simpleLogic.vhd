@@ -50,3 +50,42 @@ ARCHITECTURE logicFunction OF gateXOr2 IS
 BEGIN
   y <= x0 XOR x1;
 END logicFunction;
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+
+entity mux_2to1 is
+    Port ( SEL : in  STD_LOGIC;
+           A , B  : in  STD_LOGIC;
+           X   : out STD_LOGIC);
+end mux_2to1;
+
+architecture Behavioral of mux_2to1 is
+begin
+    X <= A when (SEL = '0') else B;
+end Behavioral;
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+
+entity mux_4to1 is
+    Port ( SEL 		: in  STD_LOGIC_VECTOR(1 downto 0);
+           A,B,C,D   : in  STD_LOGIC;
+           X   		: out STD_LOGIC);
+end mux_4to1;
+
+architecture Behavioral of mux_4to1 is
+begin
+process(A,B,C,D,SEL) is
+begin
+   if (SEL = "00") then
+		X<= A;
+	elsif (SEL = "01") then
+		X<= B;
+	elsif (SEL = "10") then
+		X<= C;
+	else
+		X<= D;
+	end if;
+end process;
+end Behavioral;
