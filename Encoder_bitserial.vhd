@@ -24,7 +24,15 @@ architecture structural of Encoder_bitserial is
 	signal s_xorflip1, s_xorflip2,s_xorflip3,s_xorflip4 : std_logic;
 	signal s_mux4 : std_logic;
 	signal s_counterbits : std_logic_vector(3 downto 0);
+	signal s_outflop : std_logic;
 
+	component flipFlopDPET is
+		port (clk, D: IN STD_LOGIC;
+				nRst: IN STD_LOGIC;
+				Q, nQ : OUT STD_LOGIC
+				);
+	end component;
+	
 	component xor_4 IS
 	  PORT (	in1, in2, in3, in4 :	in	std_logic;
 				in1_1, in2_2, in3_3, in4_4 :	in	std_logic;
@@ -80,9 +88,11 @@ begin
 	andBundle: And_4 port map(s_message,s_message,s_message,s_message,s_control(6),s_control(5),s_control(4),s_control(3),s_xor1,s_xor2,s_xor3,s_xor4 );
 	xorBundle: xor_4 port map(s_xor1,s_xor2,s_xor3,s_xor4,s_flipxor1,s_flipxor2,s_flipxor3,s_flipxor4,s_xorflip1,s_xorflip2,s_xorflip3,s_xorflip4 );
 	flipBundle: Flip_Store port map(s_clk, not s_control(7), s_xorflip1,s_xorflip2,s_xorflip3,s_xorflip4,s_flipxor1,s_flipxor2,s_flipxor3,s_flipxor4);
-	mux1st : mux_4to1 port map(s_control(1 downto 0), s_flipxor1,s_flipxor2,s_flipxor3,s_flipxor4, s_mux4);
-	mux2nd : mux_2to1 port map(s_control(2), s_message, s_mux4, s_outmessage);
 	
+	mux1st : mux_4to1 port map(s_control(1 downto 0), s_flipxor1,s_flipxor2,s_flipxor3,s_flipxor4, s_mux4);
+	mux2nd : mux_2to1 port map(s_control(2), s_message, s_mux4, s_outflop);
+	
+	finalFlop : flipFlopDPET port map (s_clk,s_outflop, s_rst, s_outmessage);
 	
 	s_rst <= rst;
 	s_clk <= clk;
